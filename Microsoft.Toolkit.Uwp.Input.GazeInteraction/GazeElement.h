@@ -43,9 +43,9 @@ internal:
         Invoked(sender, args);
     }
 
-    bool RaiseProgressFeedback(Object^ sender, DwellProgressState state, TimeSpan elapsedTime, TimeSpan triggerTime)
+    bool RaiseProgressFeedback(Object^ sender, DwellProgressState state, bool isInvoke, TimeSpan elapsedTime, TimeSpan triggerTime)
     {
-        auto args = ref new DwellProgressEventArgs(state, elapsedTime, triggerTime);
+        auto args = ref new DwellProgressEventArgs(state, isInvoke, elapsedTime, triggerTime);
         DwellProgressFeedback(sender, args);
         return args->Handled;
     }

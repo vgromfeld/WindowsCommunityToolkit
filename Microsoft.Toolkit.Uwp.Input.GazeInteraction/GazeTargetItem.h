@@ -60,17 +60,17 @@ internal:
             switch (ElementState)
             {
             case PointerState::Enter:
-                RaiseProgressEvent(DwellProgressState::Fixating);
+                RaiseProgressEvent(DwellProgressState::Fixating, false);
                 break;
 
             case PointerState::Dwell:
             case PointerState::Fixation:
-                RaiseProgressEvent(DwellProgressState::Progressing);
+                RaiseProgressEvent(DwellProgressState::Progressing, ElementState == PointerState::Dwell);
                 break;
 
             case PointerState::Exit:
             case PointerState::PreEnter:
-                RaiseProgressEvent(DwellProgressState::Idle);
+                RaiseProgressEvent(DwellProgressState::Idle, false);
                 break;
             }
 
@@ -80,24 +80,28 @@ internal:
         {
             if (RepeatCount <= MaxDwellRepeatCount)
             {
-                RaiseProgressEvent(DwellProgressState::Progressing);
+                RaiseProgressEvent(DwellProgressState::Progressing, ElementState == PointerState::Dwell);
             }
             else
             {
-                RaiseProgressEvent(DwellProgressState::Complete);
+                RaiseProgressEvent(DwellProgressState::Complete, ElementState == PointerState::Dwell);
             }
         }
     }
 
 private:
 
-    void RaiseProgressEvent(DwellProgressState state);
+    void RaiseProgressEvent(DwellProgressState state, bool isInvoke);
+	void CompletedFireworkAnimation(Platform::Object^ sender, Platform::Object^ e);
 
     PointerState _notifiedPointerState = PointerState::Exit;
     TimeSpan _prevStateTime;
     TimeSpan _nextStateTime;
     DwellProgressState _notifiedProgressState = DwellProgressState::Idle;
     Popup^ _feedbackPopup;
+
+	static Popup^ _invokePopup;
+	static Rectangle^ _invokeRectangle;
 };
 
 END_NAMESPACE_GAZE_INPUT

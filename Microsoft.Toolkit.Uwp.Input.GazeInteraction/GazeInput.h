@@ -72,10 +72,15 @@ public:
     /// </summary>
     static property DependencyProperty^ MaxDwellRepeatCountProperty { DependencyProperty^ get(); }
 
-    /// <summary>
-    /// Identifyes the IsSwitchEnabled dependency property
-    /// </summary>
-    static property DependencyProperty^ IsSwitchEnabledProperty { DependencyProperty^ get(); }
+	/// <summary>
+	/// Identifyes the IsSwitchEnabled dependency property
+	/// </summary>
+	static property DependencyProperty^ IsSwitchEnabledProperty { DependencyProperty^ get(); }
+
+	/// <summary>
+	/// Identifies the InvokeAnimationEnabled dependency property
+	/// </summary>
+	static property DependencyProperty^ IsInvokeAnimationEnabledProperty { DependencyProperty^ get(); }
 
     /// <summary>
     /// Gets or sets the brush to use when displaying the default indication that gaze entered a control
@@ -152,6 +157,11 @@ public:
     /// </summary>
     static int GetMaxDwellRepeatCount(UIElement^ element);
 
+	/// <summary>
+	/// Should an invoked animation be played.
+	/// </summary>
+	static bool GetIsInvokeAnimationEnabled(UIElement^ element);
+
     /// <summary>
     /// Gets the Boolean indicating whether gaze plus switch is enabled.
     /// </summary>
@@ -206,6 +216,11 @@ public:
     /// Sets the maximum times the control will invoked repeatedly without the user's gaze having to leave and re-enter the control. The default value is zero which disables repeated invocation of a control. Developers can set a higher value to enable repeated invocation.
     /// </summary>
     static void SetMaxDwellRepeatCount(UIElement^ element, int value);
+
+	/// <summary>
+	/// Should an invoked animation be played.
+	/// </summary>
+	static void SetIsInvokeAnimationEnabled(UIElement^ element, bool value);
 
     /// <summary>
     /// Sets the Boolean indicating whether gaze plus switch is enabled.

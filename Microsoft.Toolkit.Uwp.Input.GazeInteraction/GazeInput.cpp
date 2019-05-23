@@ -114,6 +114,7 @@ static DependencyProperty^ s_repeatDelayDurationProperty = DependencyProperty::R
 static DependencyProperty^ s_dwellRepeatDurationProperty = DependencyProperty::RegisterAttached("DwellRepeatDuration", TimeSpan::typeid, GazeInput::typeid, ref new PropertyMetadata(GazeInput::UnsetTimeSpan));
 static DependencyProperty^ s_thresholdDurationProperty = DependencyProperty::RegisterAttached("ThresholdDuration", TimeSpan::typeid, GazeInput::typeid, ref new PropertyMetadata(GazeInput::UnsetTimeSpan));
 static DependencyProperty^ s_maxRepeatCountProperty = DependencyProperty::RegisterAttached("MaxDwellRepeatCount", int::typeid, GazeInput::typeid, ref new PropertyMetadata(safe_cast<Object^>(0)));
+static DependencyProperty^ s_isInvokeAnimationEnabledProperty = DependencyProperty::RegisterAttached("InvokeAnimationEnabled", IBox<bool>::typeid, GazeInput::typeid, ref new PropertyMetadata(false));
 static DependencyProperty^ s_isSwitchEnabledProperty = DependencyProperty::RegisterAttached("IsSwitchEnabled", bool::typeid, GazeInput::typeid,
     ref new PropertyMetadata(false, ref new PropertyChangedCallback(&OnIsSwitchEnabledChanged)));
 
@@ -127,6 +128,7 @@ DependencyProperty^ GazeInput::RepeatDelayDurationProperty::get() { return s_rep
 DependencyProperty^ GazeInput::DwellRepeatDurationProperty::get() { return s_dwellRepeatDurationProperty; }
 DependencyProperty^ GazeInput::ThresholdDurationProperty::get() { return s_thresholdDurationProperty; }
 DependencyProperty^ GazeInput::MaxDwellRepeatCountProperty::get() { return s_maxRepeatCountProperty; }
+DependencyProperty^ GazeInput::IsInvokeAnimationEnabledProperty::get() { return s_isInvokeAnimationEnabledProperty; }
 DependencyProperty^ GazeInput::IsSwitchEnabledProperty::get() { return s_isSwitchEnabledProperty; }
 
 Interaction GazeInput::GetInteraction(UIElement^ element) { return safe_cast<GazeInteraction::Interaction>(element->GetValue(s_interactionProperty)); }
@@ -139,6 +141,7 @@ TimeSpan GazeInput::GetRepeatDelayDuration(UIElement^ element) { return safe_cas
 TimeSpan GazeInput::GetDwellRepeatDuration(UIElement^ element) { return safe_cast<TimeSpan>(element->GetValue(s_dwellRepeatDurationProperty)); }
 TimeSpan GazeInput::GetThresholdDuration(UIElement^ element) { return safe_cast<TimeSpan>(element->GetValue(s_thresholdDurationProperty)); }
 int GazeInput::GetMaxDwellRepeatCount(UIElement^ element) { return safe_cast<int>(element->GetValue(s_maxRepeatCountProperty)); }
+bool GazeInput::GetIsInvokeAnimationEnabled(UIElement^ element) { return safe_cast<bool>(element->GetValue(s_isInvokeAnimationEnabledProperty)); }
 bool GazeInput::GetIsSwitchEnabled(UIElement^ element) { return safe_cast<bool>(element->GetValue(s_isSwitchEnabledProperty)); }
 
 void GazeInput::SetInteraction(UIElement^ element, GazeInteraction::Interaction value) { element->SetValue(s_interactionProperty, value); }
@@ -151,6 +154,7 @@ void GazeInput::SetRepeatDelayDuration(UIElement^ element, TimeSpan span) { elem
 void GazeInput::SetDwellRepeatDuration(UIElement^ element, TimeSpan span) { element->SetValue(s_dwellRepeatDurationProperty, span); }
 void GazeInput::SetThresholdDuration(UIElement^ element, TimeSpan span) { element->SetValue(s_thresholdDurationProperty, span); }
 void GazeInput::SetMaxDwellRepeatCount(UIElement^ element, int value) { element->SetValue(s_maxRepeatCountProperty, value); }
+void GazeInput::SetIsInvokeAnimationEnabled(UIElement^ element, bool value) { element->SetValue(s_isInvokeAnimationEnabledProperty, value); }
 void GazeInput::SetIsSwitchEnabled(UIElement^ element, bool value) { element->SetValue(s_isSwitchEnabledProperty, value); }
 
 GazePointer^ GazeInput::GetGazePointer(Page^ page)
