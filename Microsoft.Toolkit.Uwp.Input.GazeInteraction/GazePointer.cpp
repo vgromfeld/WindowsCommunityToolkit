@@ -5,6 +5,7 @@
 
 #include "GazePointer.h"
 
+#include "GazeDevice.h"
 #include "GazeElement.h"
 #include "GazeHistoryItem.h"
 #include "GazeTargetItem.h"
@@ -93,7 +94,7 @@ GazePointer::GazePointer()
 
     InitializeHistogram();
 
-    _devices = ref new Vector<GazeDevicePreview^>();
+    _devices = ref new Vector<GazeDevice^>();
     _watcher = GazeInputSourcePreview::CreateWatcher();
     _watcher->Added += ref new TypedEventHandler<GazeDeviceWatcherPreview^, GazeDeviceWatcherAddedPreviewEventArgs^>(this, &GazePointer::OnDeviceAdded);
     _watcher->Removed += ref new TypedEventHandler<GazeDeviceWatcherPreview^, GazeDeviceWatcherRemovedPreviewEventArgs^>(this, &GazePointer::OnDeviceRemoved);
@@ -119,14 +120,18 @@ void GazePointer::GazeEvent::raise(Object^ sender, GazeEventArgs^ e)
 
 void GazePointer::OnDeviceAdded(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherAddedPreviewEventArgs^ args)
 {
-    _devices->Append(args->Device);
+	auto device = GazeDevice::Create(args->Device);
+	if (device != nullptr)
+	{
+		_devices->Append(device);
 
-    if (_devices->Size == 1)
-    {
-        IsDeviceAvailableChanged(nullptr, nullptr);
+		if (_devices->Size == 1)
+		{
+			IsDeviceAvailableChanged(nullptr, nullptr);
 
-        InitializeGazeInputSource();
-    }
+			InitializeGazeInputSource();
+		}
+	}
 }
 
 void GazePointer::OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args)
@@ -139,16 +144,10 @@ void GazePointer::OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWa
 
     if (index < _devices->Size)
     {
+		_devices->GetAt(index)->Destroy();
         _devices->RemoveAt(index);
-    }
-    else
-    {
-        _devices->RemoveAt(0);
-    }
 
-    if (_devices->Size == 0)
-    {
-        IsDeviceAvailableChanged(nullptr, nullptr);
+		IsDeviceAvailableChanged(nullptr, nullptr);
     }
 }
 

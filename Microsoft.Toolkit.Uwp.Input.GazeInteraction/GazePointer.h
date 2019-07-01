@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GazeCursor.h"
+#include "GazeDevice.h"
 #include "GazeFeedbackPopupFactory.h"
 #include "GazeEventArgs.h"
 #include "IGazeFilter.h"
@@ -225,7 +226,7 @@ private:
     EventRegistrationToken              _gazeExitedToken;
 
     GazeDeviceWatcherPreview^ _watcher;
-    Vector<GazeDevicePreview^>^ _devices;
+    Vector<GazeDevice^>^ _devices;
     EventRegistrationToken _deviceAddedToken;
     EventRegistrationToken _deviceRemovedToken;
 
