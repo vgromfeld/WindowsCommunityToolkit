@@ -98,6 +98,7 @@ GazePointer::GazePointer()
     _watcher = GazeInputSourcePreview::CreateWatcher();
     _watcher->Added += ref new TypedEventHandler<GazeDeviceWatcherPreview^, GazeDeviceWatcherAddedPreviewEventArgs^>(this, &GazePointer::OnDeviceAdded);
     _watcher->Removed += ref new TypedEventHandler<GazeDeviceWatcherPreview^, GazeDeviceWatcherRemovedPreviewEventArgs^>(this, &GazePointer::OnDeviceRemoved);
+	_watcher->Updated += ref new TypedEventHandler<GazeDeviceWatcherPreview^, GazeDeviceWatcherUpdatedPreviewEventArgs^>(this, &GazePointer::OnDeviceUpdated);
     _watcher->Start();
 }
 
@@ -136,19 +137,34 @@ void GazePointer::OnDeviceAdded(GazeDeviceWatcherPreview^ sender, GazeDeviceWatc
 
 void GazePointer::OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args)
 {
-    auto index = 0u;
-    while (index < _devices->Size && _devices->GetAt(index)->Id != args->Device->Id)
-    {
-        index++;
-    }
+	auto index = 0u;
+	while (index < _devices->Size && _devices->GetAt(index)->Id != args->Device->Id)
+	{
+		index++;
+	}
 
-    if (index < _devices->Size)
-    {
+	if (index < _devices->Size)
+	{
 		_devices->GetAt(index)->Destroy();
-        _devices->RemoveAt(index);
+		_devices->RemoveAt(index);
 
 		IsDeviceAvailableChanged(nullptr, nullptr);
-    }
+	}
+}
+
+void GazePointer::OnDeviceUpdated(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherUpdatedPreviewEventArgs^ args)
+{
+	auto index = 0u;
+	while (index < _devices->Size && _devices->GetAt(index)->Id != args->Device->Id)
+	{
+		index++;
+	}
+
+	if (index < _devices->Size)
+	{
+		auto device = _devices->GetAt(index);
+		device->OnUpdated(args);
+	}
 }
 
 GazePointer::~GazePointer()

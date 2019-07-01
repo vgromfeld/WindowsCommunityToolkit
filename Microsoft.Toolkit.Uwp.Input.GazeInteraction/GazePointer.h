@@ -194,7 +194,8 @@ private:
     void    OnEyesOff(Object ^sender, Object ^ea);
 
     void OnDeviceAdded(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherAddedPreviewEventArgs^ args);
-    void OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args);
+	void OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args);
+	void OnDeviceUpdated(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherUpdatedPreviewEventArgs^ args);
 
 private:
     Vector<int>^ _roots = ref new Vector<int>();

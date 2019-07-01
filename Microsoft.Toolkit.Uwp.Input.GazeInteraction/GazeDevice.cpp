@@ -17,6 +17,12 @@ IAsyncOperation<bool>^ GazeDevice::RequestCalibrationAsync()
 	return _device->RequestCalibrationAsync(); 
 }
 
+void GazeDevice::OnUpdated(GazeDeviceWatcherUpdatedPreviewEventArgs^ args)
+{
+
+}
+
+
 GazeDevice^ GazeDevice::Create(GazeDevicePreview^ device)
 {
 	auto value = device != nullptr && device->CanTrackEyes ? ref new GazeDevice(device) : nullptr;

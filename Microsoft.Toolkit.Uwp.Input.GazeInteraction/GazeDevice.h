@@ -14,6 +14,7 @@ private:
 internal:
 	property unsigned int Id { unsigned int get(); }
 	IAsyncOperation<bool>^ RequestCalibrationAsync();
+	void OnUpdated(GazeDeviceWatcherUpdatedPreviewEventArgs^ args);
 
 	static GazeDevice^ Create(GazeDevicePreview^ device);
 	void Destroy();
