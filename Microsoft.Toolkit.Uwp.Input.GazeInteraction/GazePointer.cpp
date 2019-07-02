@@ -112,6 +112,10 @@ GazePointer::GazePointer()
 	// provide a default of GAZE_IDLE_TIME microseconds to fire eyes off 
 	EyesOffDelay = GAZE_IDLE_TIME;
 
+	_calibrationTimer = ref new DispatcherTimer();
+	_calibrationTimer->Tick += ref new EventHandler<Object^>(this, &GazePointer::OnCalibrationTimeout);
+	_calibrationTimer->Interval = TimeSpanFromMicroseconds(30 * 1000 * 1000);
+
 	InitializeHistogram();
 
 	_devices = ref new Vector<GazeDevice^>();
@@ -800,9 +804,21 @@ void GazePointer::Click()
 /// </summary>
 IAsyncOperation<bool>^ GazePointer::RequestCalibrationAsync()
 {
+	_calibrationTimer->Start();
+
 	return _devices->Size == 1 ?
 		_devices->GetAt(0)->RequestCalibrationAsync(this) :
 		concurrency::create_async([] { return false; });
+}
+
+void GazePointer::OnCalibrationTimeout(Object ^sender, Object ^ea)
+{
+	_calibrationTimer->Stop();
+
+	for (auto device : _devices)
+	{
+		device->OnCalibrationTimeout();
+	}
 }
 
 

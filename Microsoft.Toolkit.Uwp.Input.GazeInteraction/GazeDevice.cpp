@@ -48,6 +48,10 @@ void GazeDevice::OnUpdated(GazePointer^ gazePointer, GazeDeviceWatcherUpdatedPre
 	}
 }
 
+void GazeDevice::OnCalibrationTimeout()
+{
+
+}
 
 GazeDevice^ GazeDevice::Create(GazePointer^ gazePointer, GazeDevicePreview^ device)
 {

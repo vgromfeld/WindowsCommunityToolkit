@@ -17,6 +17,7 @@ internal:
 	property unsigned int Id { unsigned int get(); }
 	IAsyncOperation<bool>^ RequestCalibrationAsync(GazePointer^ gazePointer);
 	void OnUpdated(GazePointer^ gazePointer, GazeDeviceWatcherUpdatedPreviewEventArgs^ args);
+	void OnCalibrationTimeout();
 
 	static GazeDevice^ Create(GazePointer^ gazePointer, GazeDevicePreview^ device);
 	void Destroy(GazePointer^ gazePointer);
