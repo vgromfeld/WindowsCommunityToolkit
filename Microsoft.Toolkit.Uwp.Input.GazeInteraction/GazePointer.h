@@ -154,8 +154,14 @@ internal:
     void RemoveRoot(int proxyId);
 
 
-    property bool IsDeviceAvailable { bool get() { return _devices->Size != 0; }}
-    event EventHandler<Object^>^ IsDeviceAvailableChanged;
+	property bool IsDeviceAvailable { bool get() { return _devices->Size != 0; }}
+	event EventHandler<Object^>^ IsDeviceAvailableChanged;
+
+	property bool IsDeviceReady { bool get() { return _deviceReadyCount != 0; }}
+	event EventHandler<Object^>^ IsDeviceReadyChanged;
+
+	void IncrementDeviceReadyCount();
+	void DecrementDeviceReadyCount();
 
 private:
 
@@ -230,6 +236,8 @@ private:
     Vector<GazeDevice^>^ _devices;
     EventRegistrationToken _deviceAddedToken;
     EventRegistrationToken _deviceRemovedToken;
+
+	int _deviceReadyCount;
 
     TimeSpan _defaultFixation = DEFAULT_FIXATION_DELAY;
     TimeSpan _defaultDwell = DEFAULT_DWELL_DELAY;

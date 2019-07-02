@@ -171,17 +171,32 @@ void GazeInput::LoadSettings(ValueSet^ settings)
 
 bool GazeInput::IsDeviceAvailable::get()
 {
-    return GazePointer::Instance->IsDeviceAvailable;
+	return GazePointer::Instance->IsDeviceAvailable;
 }
 
 EventRegistrationToken GazeInput::IsDeviceAvailableChanged::add(EventHandler<Object^>^ handler)
 {
-    return GazePointer::Instance->IsDeviceAvailableChanged += handler;
+	return GazePointer::Instance->IsDeviceAvailableChanged += handler;
 }
 
 void GazeInput::IsDeviceAvailableChanged::remove(EventRegistrationToken token)
 {
-    GazePointer::Instance->IsDeviceAvailableChanged -= token;
+	GazePointer::Instance->IsDeviceAvailableChanged -= token;
+}
+
+bool GazeInput::IsDeviceReady::get()
+{
+	return GazePointer::Instance->IsDeviceReady;
+}
+
+EventRegistrationToken GazeInput::IsDeviceReadyChanged::add(EventHandler<Object^>^ handler)
+{
+	return GazePointer::Instance->IsDeviceReadyChanged += handler;
+}
+
+void GazeInput::IsDeviceReadyChanged::remove(EventRegistrationToken token)
+{
+	GazePointer::Instance->IsDeviceReadyChanged -= token;
 }
 
 END_NAMESPACE_GAZE_INPUT
