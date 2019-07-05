@@ -554,7 +554,7 @@ void GazePointer::CheckIfExiting(TimeSpan curTimestamp)
             _currentlyFixatedElement = nullptr;
 
             RaiseGazePointerEvent(targetItem, PointerState::Exit, targetItem->ElapsedTime);
-            targetItem->GiveFeedback();
+            targetItem->GiveFeedback(false);
 
             _activeHitTargetTimes->RemoveAt(index);
 
@@ -666,6 +666,13 @@ void GazePointer::ProcessGazePoint(TimeSpan timestamp, Point position)
 {
     auto ea = ref new GazeFilterArgs(position, timestamp);
 
+#ifdef _LEGACY_SUPPORT
+	if (InputEventForwardingEnabled)
+    {
+        OnGazeInputEvent(this, ea->Location);
+    }
+#endif
+
     auto fa = Filter->Update(ea);
     _gazeCursor->Position = fa->Location;
 
@@ -739,10 +746,20 @@ void GazePointer::ProcessGazePoint(TimeSpan timestamp, Point position)
             }
         }
 
-        RaiseGazePointerEvent(targetItem, targetItem->ElementState, targetItem->ElapsedTime);
-    }
+        if (targetItem->ElementState == PointerState::Enter)
+        {
+            // Cache the fixated item
+            _currentlyFixatedElement = targetItem;
+        }
 
-    targetItem->GiveFeedback();
+        RaiseGazePointerEvent(targetItem, targetItem->ElementState, targetItem->ElapsedTime);
+
+        targetItem->GiveFeedback(targetItem->ElementState == PointerState::Dwell);
+    }
+    else
+    {
+        targetItem->GiveFeedback(false);
+    }
 
     _eyesOffTimer->Start();
     _lastTimestamp = fa->Timestamp;

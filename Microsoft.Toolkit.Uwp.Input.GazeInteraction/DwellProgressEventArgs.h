@@ -20,6 +20,11 @@ public:
     property DwellProgressState State { DwellProgressState get() { return _state; }}
 
     /// <summary>
+    /// Feedback coincides with an invokation.
+    /// </summary>
+    property bool IsInvoke { bool get() { return _isInvoke; }}
+
+    /// <summary>
     /// A value between 0 and 1 that reflects the fraction of progress towards completing dwell
     /// </summary>
     property double Progress { double get() { return _progress; }}
@@ -30,13 +35,15 @@ public:
     property bool Handled;
 
 internal:
-	DwellProgressEventArgs(DwellProgressState state, TimeSpan elapsedDuration, TimeSpan triggerDuration)
+	DwellProgressEventArgs(DwellProgressState state, bool isInvoke, TimeSpan elapsedDuration, TimeSpan triggerDuration)
 	{
         _state = state;
+        _isInvoke = isInvoke;
         _progress = ((double)elapsedDuration.Duration) / triggerDuration.Duration;
 	}
 private:
     DwellProgressState _state;
+    bool _isInvoke;
     double _progress;
 };
 

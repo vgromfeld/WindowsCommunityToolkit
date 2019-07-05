@@ -77,8 +77,15 @@ public:
     /// </summary>
     static property DependencyProperty^ IsSwitchEnabledProperty { DependencyProperty^ get(); }
 
+#ifdef _LEGACY_SUPPORT
     /// <summary>
-    /// Gets or sets the brush to use when displaying the default indication that gaze entered a control
+        /// Identifies the InvokeAnimationEnabled dependency property
+    /// </summary>
+    static property DependencyProperty^ IsInvokeAnimationEnabledProperty { DependencyProperty^ get(); }
+#endif
+
+    /// <summary>
+/// Gets or sets the brush to use when displaying the default indication that gaze entered a control
     /// </summary>
     static property Brush^ DwellFeedbackEnterBrush { Brush^ get(); void set(Brush^ value); }
 
@@ -152,6 +159,13 @@ public:
     /// </summary>
     static int GetMaxDwellRepeatCount(UIElement^ element);
 
+#ifdef _LEGACY_SUPPORT
+	/// <summary>
+        /// Should an invoked animation be played.
+    /// </summary>
+    static bool GetIsInvokeAnimationEnabled(UIElement^ element);
+#endif
+
     /// <summary>
     /// Gets the Boolean indicating whether gaze plus switch is enabled.
     /// </summary>
@@ -207,6 +221,13 @@ public:
     /// </summary>
     static void SetMaxDwellRepeatCount(UIElement^ element, int value);
 
+#ifdef _LEGACY_SUPPORT
+	/// <summary>
+    /// Should an invoked animation be played.
+    /// </summary>
+    static void SetIsInvokeAnimationEnabled(UIElement^ element, bool value);
+#endif
+
     /// <summary>
     /// Sets the Boolean indicating whether gaze plus switch is enabled.
     /// </summary>
@@ -215,7 +236,12 @@ public:
     /// <summary>
     /// Gets the GazePointer object.
     /// </summary>
-    static GazePointer^ GetGazePointer(Page^ page);
+    static _declspec(deprecated("Page parameter is unused and should be omitted")) GazePointer^ GetGazePointer(Page^ page) { return GetGazePointer(); }
+
+    /// <summary>
+    /// Gets the GazePointer object.
+    /// </summary>
+    static GazePointer^ GetGazePointer();
 
     /// <summary>
     /// Invoke the default action of the specified UIElement.

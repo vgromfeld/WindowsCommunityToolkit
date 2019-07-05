@@ -7,6 +7,7 @@
 
 using namespace Windows::Devices::HumanInterfaceDevice;
 using namespace Windows::Devices::Input::Preview;
+using namespace Windows::Foundation::Metadata;
 
 BEGIN_NAMESPACE_GAZE_INPUT
 
@@ -28,6 +29,7 @@ namespace GazeHidParsers {
         property GazeHidPosition^ HeadRotation;
     };
 
+	[WebHostHidden]
     public ref class GazeHidPositionParser sealed
     {
     public:
@@ -42,7 +44,8 @@ namespace GazeHidParsers {
         uint16 _usage                     = 0x0000;
     };
 
-    public ref class GazeHidRotationParser sealed
+	[WebHostHidden]
+	public ref class GazeHidRotationParser sealed
     {
     public:
         GazeHidRotationParser(GazeDevicePreview ^ gazeDevice, uint16 usage);
@@ -56,7 +59,8 @@ namespace GazeHidParsers {
         uint16 _usage                     = 0x0000;
     };
 
-    public ref class GazeHidPositionsParser sealed
+	[WebHostHidden]
+	public ref class GazeHidPositionsParser sealed
     {
     public:
         GazeHidPositionsParser(GazeDevicePreview ^ gazeDevice);

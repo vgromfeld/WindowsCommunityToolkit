@@ -11,10 +11,13 @@
 using namespace Windows::UI::Xaml::Automation;
 using namespace Windows::UI::Xaml::Automation::Provider;
 using namespace Windows::UI::Xaml::Automation::Peers;
+using namespace Windows::UI::Xaml::Media::Animation;
 
 BEGIN_NAMESPACE_GAZE_INPUT
 
 static DependencyProperty^ GazeTargetItemProperty = DependencyProperty::RegisterAttached("_GazeTargetItem", GazeTargetItem::typeid, GazeTargetItem::typeid, ref new PropertyMetadata(nullptr));
+
+static Popup^ _invokePopup = nullptr;
 
 template<PatternInterface P, typename T>
 ref class PatternGazeTargetItem abstract : public GazeTargetItem
@@ -229,7 +232,7 @@ GazeTargetItem^ GazeTargetItem::GetOrCreate(UIElement^ element)
     return item;
 }
 
-void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
+void GazeTargetItem::RaiseProgressEvent(DwellProgressState state, bool isInvoke)
 {
     // TODO: We should eliminate non-invokable controls before we arrive here!
     if (dynamic_cast<Page^>(TargetElement) != nullptr)
@@ -244,7 +247,7 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
         auto gazeElement = GazeInput::GetGazeElement(TargetElement);
         if (gazeElement != nullptr)
         {
-            handled = gazeElement->RaiseProgressFeedback(TargetElement, state, ElapsedTime - _prevStateTime, _nextStateTime - _prevStateTime);
+            handled = gazeElement->RaiseProgressFeedback(TargetElement, state, isInvoke, ElapsedTime - _prevStateTime, _nextStateTime - _prevStateTime);
         }
 
         if (!handled && state != DwellProgressState::Idle)
@@ -254,7 +257,8 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
                 _feedbackPopup = GazePointer::Instance->_gazeFeedbackPopupFactory->Get();
             }
 
-            auto control = safe_cast<FrameworkElement^>(TargetElement);
+            auto actualControl = safe_cast<Control^>(TargetElement);
+            auto control = actualControl != nullptr ? actualControl : safe_cast<FrameworkElement^>(TargetElement);
 
             auto transform = control->TransformToVisual(_feedbackPopup);
             auto bounds = transform->TransformBounds(*ref new Rect(*ref new Point(0, 0),
@@ -267,7 +271,16 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
 
                 if (0 <= progress && progress < 1)
                 {
-                    rectangle->Stroke = GazeInput::DwellFeedbackProgressBrush;
+                    auto stroke = GazeInput::DwellFeedbackProgressBrush;
+
+#ifdef _LEGACY_SUPPORT
+                    if (stroke != nullptr && actualControl != nullptr)
+                    {
+                        stroke = actualControl->Foreground;
+                    }
+#endif
+
+                    rectangle->Stroke = stroke;
                     rectangle->Width = (1 - progress) * bounds.Width;
                     rectangle->Height = (1 - progress) * bounds.Height;
 
@@ -277,8 +290,17 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
             }
             else
             {
-                rectangle->Stroke = state == DwellProgressState::Fixating ?
+                auto stroke = state == DwellProgressState::Fixating ?
                     GazeInput::DwellFeedbackEnterBrush : GazeInput::DwellFeedbackCompleteBrush;
+
+#ifdef _LEGACY_SUPPORT
+                if (stroke != nullptr && actualControl != nullptr)
+                {
+                    rectangle->Stroke = actualControl->Foreground;
+                }
+#endif
+
+                rectangle->Stroke = stroke;
                 rectangle->Width = bounds.Width;
                 rectangle->Height = bounds.Height;
 
@@ -287,6 +309,60 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
             }
 
             _feedbackPopup->IsOpen = true;
+
+            if (isInvoke && (_invokePopup == nullptr || !_invokePopup->IsOpen))
+            {
+#ifdef _LEGACY_SUPPORT
+				if (GazeInput::GetIsInvokeAnimationEnabled(control))
+                {
+                    static Shapes::Rectangle^ invokeRectangle;
+                    if (_invokePopup == nullptr)
+                    {
+                        _invokePopup = ref new Popup();
+
+                        invokeRectangle = ref new Shapes::Rectangle();
+                        invokeRectangle->IsHitTestVisible = false;
+
+                        _invokePopup->Child = invokeRectangle;
+                    }
+
+                    auto stroke = GazeInput::DwellFeedbackProgressBrush;
+
+#ifdef _LEGACY_SUPPORT
+                    if (stroke != nullptr && actualControl != nullptr)
+                    {
+                        stroke = actualControl->Foreground;
+                    }
+#endif
+                    invokeRectangle->Fill = stroke;
+                    invokeRectangle->Opacity = 0.0;
+                    invokeRectangle->Width = bounds.Width;
+                    invokeRectangle->Height = bounds.Height;
+
+                    _invokePopup->HorizontalOffset = bounds.Left;
+                    _invokePopup->VerticalOffset = bounds.Top;
+
+                    static Media::Animation::Storyboard^ storyboard;
+                    if (storyboard == nullptr)
+                    {
+                        DoubleAnimation^ animationObj = ref new Media::Animation::DoubleAnimation();
+                        animationObj->From = 0.4;
+                        animationObj->To = 0.0;
+                        TimeSpan ts = TimeSpan();
+                        ts.Duration = 3000000L;
+                        animationObj->Duration = DurationHelper::FromTimeSpan(ts);
+                        storyboard = ref new Media::Animation::Storyboard();
+                        storyboard->Children->Append(animationObj);
+                        storyboard->SetTargetProperty(storyboard, "(UIElement.Opacity)");
+                        storyboard->SetTarget(storyboard, invokeRectangle);
+                        storyboard->Completed += ref new EventHandler<Platform::Object^>(this, &GazeTargetItem::CompletedFireworkAnimation);
+                    }
+                    storyboard->Begin();
+
+                    _invokePopup->IsOpen = true;
+                }
+#endif
+            }
         }
         else
         {
@@ -299,6 +375,11 @@ void GazeTargetItem::RaiseProgressEvent(DwellProgressState state)
     }
 
     _notifiedProgressState = state;
+}
+
+void GazeTargetItem::CompletedFireworkAnimation(Platform::Object^ sender, Platform::Object^ e)
+{
+    _invokePopup->IsOpen = false;
 }
 
 END_NAMESPACE_GAZE_INPUT

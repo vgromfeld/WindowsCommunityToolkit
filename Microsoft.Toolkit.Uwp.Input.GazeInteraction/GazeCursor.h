@@ -46,31 +46,11 @@ public:
         void set(Point value)
         {
             _cursorPosition = value;
-            _gazePopup->HorizontalOffset = value.X;
-            _gazePopup->VerticalOffset = value.Y;
+            _gazePopup->HorizontalOffset = value.X - CursorRadius;
+            _gazePopup->VerticalOffset = value.Y - CursorRadius;
             SetVisibility();
         }
     }
-
-	property UIElement^ PopupChild
-	{
-		UIElement^ get()
-		{
-			return _gazePopup->Child;
-		}
-		void set(UIElement^ value)
-		{
-			_gazePopup->Child = value;
-		}
-	}
-
-	property FrameworkElement^ CursorElement
-	{
-		FrameworkElement^ get()
-		{
-			return dynamic_cast<FrameworkElement^>(_gazePopup->Child);
-		}
-	}
 
 internal:
     GazeCursor();
@@ -79,6 +59,7 @@ private:
     void SetVisibility();
 
     Popup^              _gazePopup;
+    Shapes::Ellipse^    _gazeCursor;
     Point               _cursorPosition = {};
     int                 _cursorRadius = DEFAULT_CURSOR_RADIUS;
     bool                _isCursorVisible = DEFAULT_CURSOR_VISIBILITY;

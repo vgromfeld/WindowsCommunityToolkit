@@ -36,17 +36,47 @@ public:
 
 internal:
 
-    void RaiseStateChanged(Object^ sender, StateChangedEventArgs^ args) { StateChanged(sender, args); }
+    void RaiseStateChanged(Object^ sender, StateChangedEventArgs^ args)
+    {
+        try
+        {
+            StateChanged(sender, args);
+        }
+        catch (...)
+        {
+            // Temporary avoidance of exceptions being thrown because we're attempting
+            // to clean up for an object that has gone away, perhaps due to naviagtion
+            // to another page.
+        }
+    }
 
     void RaiseInvoked(Object^ sender, DwellInvokedRoutedEventArgs^ args)
     {
-        Invoked(sender, args);
+        try
+        {
+            Invoked(sender, args);
+        }
+        catch (...)
+        {
+            // Temporary avoidance of exceptions being thrown because we're attempting
+            // to clean up for an object that has gone away, perhaps due to naviagtion
+            // to another page.
+        }
     }
 
-    bool RaiseProgressFeedback(Object^ sender, DwellProgressState state, TimeSpan elapsedTime, TimeSpan triggerTime)
+    bool RaiseProgressFeedback(Object^ sender, DwellProgressState state, bool isInvoke, TimeSpan elapsedTime, TimeSpan triggerTime)
     {
-        auto args = ref new DwellProgressEventArgs(state, elapsedTime, triggerTime);
-        DwellProgressFeedback(sender, args);
+        auto args = ref new DwellProgressEventArgs(state, isInvoke, elapsedTime, triggerTime);
+        try
+        {
+            DwellProgressFeedback(sender, args);
+        }
+        catch (...)
+        {
+            // Temporary avoidance of exceptions being thrown because we're attempting
+            // to clean up for an object that has gone away, perhaps due to naviagtion
+            // to another page.
+        }
         return args->Handled;
     }
 };

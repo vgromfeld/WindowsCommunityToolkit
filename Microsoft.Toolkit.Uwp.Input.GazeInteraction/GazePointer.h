@@ -19,6 +19,12 @@ BEGIN_NAMESPACE_GAZE_INPUT
 ref class GazeTargetItem;
 ref struct GazeHistoryItem;
 
+#ifdef _LEGACY_SUPPORT
+ref class GazePointer;
+public delegate void GazeInputEvent(Platform::Object^ sender, Point pt);
+#endif
+
+
 /// <summary>
 /// Class of singleton object coordinating gaze input.
 /// </summary>
@@ -61,15 +67,6 @@ public:
         void remove(EventRegistrationToken token);
         void raise(Object^ sender, GazeEventArgs^ e);
     }
-
-	/// <summary>
-	/// The UIElement representing the cursor.
-	/// </summary>
-	property UIElement^ CursorElement
-	{
-		UIElement^ get() { return _gazeCursor->PopupChild; }
-		void set(UIElement^ value) { _gazeCursor->PopupChild = value; }
-	}
 
 private:
 
@@ -114,9 +111,17 @@ internal:
         }
     }
 
+public:
+
     // Pluggable filter for eye tracking sample data. This defaults to being set to the
     // NullFilter which performs no filtering of input samples.
     property IGazeFilter^ Filter;
+
+#ifdef _LEGACY_SUPPORT
+public:
+#else
+internal:
+#endif
 
     property bool IsCursorVisible
     {
@@ -238,6 +243,12 @@ private:
     bool                                _isAlwaysActivated;
     bool                                _isSwitchEnabled;
     GazeTargetItem^                     _currentlyFixatedElement;
+
+#ifdef _LEGACY_SUPPORT
+public:
+    event GazeInputEvent^ OnGazeInputEvent;
+    property bool InputEventForwardingEnabled;
+#endif
 };
 
 END_NAMESPACE_GAZE_INPUT
