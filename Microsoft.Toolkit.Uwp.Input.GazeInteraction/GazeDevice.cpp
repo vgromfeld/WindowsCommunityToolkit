@@ -24,6 +24,7 @@ IAsyncOperation<bool>^ GazeDevice::RequestCalibrationAsync(GazePointer^ gazePoin
 { 
 	if (_isReady)
 	{
+		_isExpectingCalibration = true;
 		_isReady = false;
 		gazePointer->DecrementDeviceReadyCount();
 	}
@@ -33,6 +34,8 @@ IAsyncOperation<bool>^ GazeDevice::RequestCalibrationAsync(GazePointer^ gazePoin
 
 void GazeDevice::OnUpdated(GazePointer^ gazePointer, GazeDeviceWatcherUpdatedPreviewEventArgs^ args)
 {
+	_isExpectingCalibration = false;
+
 	if (args->Device->ConfigurationState == GazeDeviceConfigurationStatePreview::Ready)
 	{
 		if (!_isReady)
@@ -48,9 +51,14 @@ void GazeDevice::OnUpdated(GazePointer^ gazePointer, GazeDeviceWatcherUpdatedPre
 	}
 }
 
-void GazeDevice::OnCalibrationTimeout()
+void GazeDevice::OnCalibrationTimeout(GazePointer^ gazePointer)
 {
-
+	if (_isExpectingCalibration)
+	{
+		_isExpectingCalibration = false;
+		_isReady = true;
+		gazePointer->IncrementDeviceReadyCount();
+	}
 }
 
 GazeDevice^ GazeDevice::Create(GazePointer^ gazePointer, GazeDevicePreview^ device)

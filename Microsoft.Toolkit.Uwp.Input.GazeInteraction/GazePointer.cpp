@@ -676,7 +676,7 @@ void GazePointer::OnGazeEntered(GazeInputSourcePreview^ provider, GazeEnteredPre
 
 void GazePointer::OnGazeMoved(GazeInputSourcePreview^ provider, GazeMovedPreviewEventArgs^ args)
 {
-	if (!_isShuttingDown)
+	if (!_isShuttingDown && _deviceReadyCount != 0)
 	{
 		auto intermediatePoints = args->GetIntermediatePoints();
 		for each(auto point in intermediatePoints)
@@ -834,7 +834,7 @@ void GazePointer::OnCalibrationTimeout(Object ^sender, Object ^ea)
 
 	for (auto device : _devices)
 	{
-		device->OnCalibrationTimeout();
+		device->OnCalibrationTimeout(this);
 	}
 }
 

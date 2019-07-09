@@ -17,13 +17,14 @@ internal:
 	property unsigned int Id { unsigned int get(); }
 	IAsyncOperation<bool>^ RequestCalibrationAsync(GazePointer^ gazePointer);
 	void OnUpdated(GazePointer^ gazePointer, GazeDeviceWatcherUpdatedPreviewEventArgs^ args);
-	void OnCalibrationTimeout();
+	void OnCalibrationTimeout(GazePointer^ gazePointer);
 
 	static GazeDevice^ Create(GazePointer^ gazePointer, GazeDevicePreview^ device);
 	void Destroy(GazePointer^ gazePointer);
 private:
 	GazeDevicePreview^ const _device;
 	bool _isReady;
+	bool _isExpectingCalibration;
 };
 
 END_NAMESPACE_GAZE_INPUT
