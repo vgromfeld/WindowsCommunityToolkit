@@ -49,6 +49,9 @@
     <ClCompile Include="GazeHidParsers.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="GazeDevice.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -115,6 +118,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GazeHidParsers.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GazeDevice.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

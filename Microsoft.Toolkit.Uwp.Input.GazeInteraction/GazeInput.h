@@ -248,21 +248,35 @@ public:
     /// </summary>
     static void Invoke(UIElement^ element);
 
-    /// <summary>
-    /// Reports whether a gaze input device is available, and hence whether there is any possibility of gaze events occurring in the application.
-    /// </summary>
-    static property bool IsDeviceAvailable { bool get(); }
+	/// <summary>
+	/// Reports whether a gaze input device is available, and hence whether there is any possibility of gaze events occurring in the application.
+	/// </summary>
+	static property bool IsDeviceAvailable { bool get(); }
 
-    /// <summary>
-    /// Event triggered whenever IsDeviceAvailable changes value.
-    /// </summary>
-    static event EventHandler<Object^>^ IsDeviceAvailableChanged
-    {
-        EventRegistrationToken add(EventHandler<Object^>^ handler);
-        void remove(EventRegistrationToken token);
-    }
+	/// <summary>
+	/// Event triggered whenever IsDeviceAvailable changes value.
+	/// </summary>
+	static event EventHandler<Object^>^ IsDeviceAvailableChanged
+	{
+		EventRegistrationToken add(EventHandler<Object^>^ handler);
+		void remove(EventRegistrationToken token);
+	}
 
-    /// <summary>
+	/// <summary>
+	/// Reports whether there is a ready gaze input device.
+	/// </summary>
+	static property bool IsDeviceReady { bool get(); }
+
+	/// <summary>
+	/// Event triggered whenever IsDeviceReady changes value.
+	/// </summary>
+	static event EventHandler<Object^>^ IsDeviceReadyChanged
+	{
+		EventRegistrationToken add(EventHandler<Object^>^ handler);
+		void remove(EventRegistrationToken token);
+	}
+
+	/// <summary>
     /// Loads a settings collection into GazeInput.
     /// Note: This must be loaded from a UI thread to be valid, since the GazeInput
     /// instance is tied to the UI thread.

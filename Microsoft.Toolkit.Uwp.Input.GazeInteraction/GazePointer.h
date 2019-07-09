@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GazeCursor.h"
+#include "GazeDevice.h"
 #include "GazeFeedbackPopupFactory.h"
 #include "GazeEventArgs.h"
 #include "IGazeFilter.h"
@@ -158,8 +159,14 @@ internal:
     void RemoveRoot(int proxyId);
 
 
-    property bool IsDeviceAvailable { bool get() { return _devices->Size != 0; }}
-    event EventHandler<Object^>^ IsDeviceAvailableChanged;
+	property bool IsDeviceAvailable { bool get() { return _devices->Size != 0; }}
+	event EventHandler<Object^>^ IsDeviceAvailableChanged;
+
+	property bool IsDeviceReady { bool get() { return _deviceReadyCount != 0; }}
+	event EventHandler<Object^>^ IsDeviceReadyChanged;
+
+	void IncrementDeviceReadyCount();
+	void DecrementDeviceReadyCount();
 
 private:
 
@@ -195,10 +202,13 @@ private:
 
     void ProcessGazePoint(TimeSpan timestamp, Point position);
 
-    void    OnEyesOff(Object ^sender, Object ^ea);
+	void    OnEyesOff(Object ^sender, Object ^ea);
 
     void OnDeviceAdded(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherAddedPreviewEventArgs^ args);
-    void OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args);
+	void OnDeviceRemoved(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherRemovedPreviewEventArgs^ args);
+	void OnDeviceUpdated(GazeDeviceWatcherPreview^ sender, GazeDeviceWatcherUpdatedPreviewEventArgs^ args);
+
+	void OnCalibrationTimeout(Object ^sender, Object ^ea);
 
 private:
     Vector<int>^ _roots = ref new Vector<int>();
@@ -207,6 +217,8 @@ private:
 
     GazeCursor^                         _gazeCursor;
     DispatcherTimer^                    _eyesOffTimer;
+
+	DispatcherTimer^ _calibrationTimer;
 
     // _offScreenElement is a pseudo-element that represents the area outside
     // the screen so we can track how long the user has been looking outside
@@ -230,9 +242,11 @@ private:
     EventRegistrationToken              _gazeExitedToken;
 
     GazeDeviceWatcherPreview^ _watcher;
-    Vector<GazeDevicePreview^>^ _devices;
+    Vector<GazeDevice^>^ _devices;
     EventRegistrationToken _deviceAddedToken;
     EventRegistrationToken _deviceRemovedToken;
+
+	int _deviceReadyCount;
 
     TimeSpan _defaultFixation = DEFAULT_FIXATION_DELAY;
     TimeSpan _defaultDwell = DEFAULT_DWELL_DELAY;
