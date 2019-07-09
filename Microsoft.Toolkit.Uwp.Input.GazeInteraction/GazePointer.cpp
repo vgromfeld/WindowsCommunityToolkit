@@ -821,11 +821,24 @@ void GazePointer::Click()
 /// </summary>
 IAsyncOperation<bool>^ GazePointer::RequestCalibrationAsync()
 {
+	IAsyncOperation<bool>^ value;
+
 	_calibrationTimer->Start();
 
-	return _devices->Size == 1 ?
-		_devices->GetAt(0)->RequestCalibrationAsync(this) :
-		concurrency::create_async([] { return false; });
+	if (_devices->Size == 1)
+	{
+		value = _devices->GetAt(0)->RequestCalibrationAsync(this);
+	}
+	else
+	{
+#ifdef _LEGACY_SUPPORT
+		value = nullptr;
+#else
+		value = concurrency::create_async([] { return false; });
+#endif
+	}
+
+	return value;
 }
 
 void GazePointer::OnCalibrationTimeout(Object ^sender, Object ^ea)
