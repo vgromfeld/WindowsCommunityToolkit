@@ -92,6 +92,7 @@ void GazePointer::DecrementDeviceReadyCount()
 
 	if (_deviceReadyCount == 0)
 	{
+		_gazeCursor->IsGazeEntered = false;
 		IsDeviceReadyChanged(nullptr, nullptr);
 	}
 }
@@ -671,7 +672,7 @@ void GazePointer::RaiseGazePointerEvent(GazeTargetItem^ target, PointerState sta
 void GazePointer::OnGazeEntered(GazeInputSourcePreview^ provider, GazeEnteredPreviewEventArgs^ args)
 {
 	//Debug::WriteLine(L"Entered at %ld", args->CurrentPoint->Timestamp);
-	_gazeCursor->IsGazeEntered = true;
+	//_gazeCursor->IsGazeEntered = true;
 }
 
 void GazePointer::OnGazeMoved(GazeInputSourcePreview^ provider, GazeMovedPreviewEventArgs^ args)
