@@ -763,7 +763,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls.DataGridInternals
             {
                 _weakCollectionChangedListener = new WeakEventListener<DataGridDataConnection, object, NotifyCollectionChangedEventArgs>(this);
                 _weakCollectionChangedListener.OnEventAction = (instance, source, eventArgs) => instance.NotifyingDataSource_CollectionChanged(source, eventArgs);
-                _weakCollectionChangedListener.OnDetachAction = (weakEventListener) => notifyingDataSource1.CollectionChanged -= weakEventListener.OnEvent;
+                _weakCollectionChangedListener.OnDetachAction = (instance, weakEventListener) => notifyingDataSource1.CollectionChanged -= weakEventListener.OnEvent;
                 notifyingDataSource1.CollectionChanged += _weakCollectionChangedListener.OnEvent;
             }
             else
@@ -773,7 +773,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls.DataGridInternals
                 {
                     _weakVectorChangedListener = new WeakEventListener<DataGridDataConnection, object, IVectorChangedEventArgs>(this);
                     _weakVectorChangedListener.OnEventAction = (instance, source, eventArgs) => instance.NotifyingDataSource_VectorChanged(source as IObservableVector<object>, eventArgs);
-                    _weakVectorChangedListener.OnDetachAction = (weakEventListener) => notifyingDataSource2.VectorChanged -= _weakVectorChangedListener.OnEvent;
+                    _weakVectorChangedListener.OnDetachAction = (instance, weakEventListener) => notifyingDataSource2.VectorChanged -= _weakVectorChangedListener.OnEvent;
                     notifyingDataSource2.VectorChanged += _weakVectorChangedListener.OnEvent;
                 }
             }
@@ -784,7 +784,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls.DataGridInternals
                 INotifyCollectionChanged sortDescriptionsINCC = (INotifyCollectionChanged)this.SortDescriptions;
                 _weakSortDescriptionsCollectionChangedListener = new WeakEventListener<DataGridDataConnection, object, NotifyCollectionChangedEventArgs>(this);
                 _weakSortDescriptionsCollectionChangedListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionView_SortDescriptions_CollectionChanged(source, eventArgs);
-                _weakSortDescriptionsCollectionChangedListener.OnDetachAction = (weakEventListener) => sortDescriptionsINCC.CollectionChanged -= weakEventListener.OnEvent;
+                _weakSortDescriptionsCollectionChangedListener.OnDetachAction = (instance, weakEventListener) => sortDescriptionsINCC.CollectionChanged -= weakEventListener.OnEvent;
                 sortDescriptionsINCC.CollectionChanged += _weakSortDescriptionsCollectionChangedListener.OnEvent;
             }
 #endif
@@ -796,12 +796,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls.DataGridInternals
 
                 _weakCurrentChangedListener = new WeakEventListener<DataGridDataConnection, object, object>(this);
                 _weakCurrentChangedListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionView_CurrentChanged(source, null);
-                _weakCurrentChangedListener.OnDetachAction = (weakEventListener) => collectionView.CurrentChanged -= weakEventListener.OnEvent;
+                _weakCurrentChangedListener.OnDetachAction = (instance, weakEventListener) => collectionView.CurrentChanged -= weakEventListener.OnEvent;
                 this.CollectionView.CurrentChanged += _weakCurrentChangedListener.OnEvent;
 
                 _weakCurrentChangingListener = new WeakEventListener<DataGridDataConnection, object, CurrentChangingEventArgs>(this);
                 _weakCurrentChangingListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionView_CurrentChanging(source, eventArgs);
-                _weakCurrentChangingListener.OnDetachAction = (weakEventListener) => collectionView.CurrentChanging -= weakEventListener.OnEvent;
+                _weakCurrentChangingListener.OnDetachAction = (instance, weakEventListener) => collectionView.CurrentChanging -= weakEventListener.OnEvent;
                 this.CollectionView.CurrentChanging += _weakCurrentChangingListener.OnEvent;
             }
 
@@ -1057,7 +1057,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls.DataGridInternals
             {
                     _weakIncrementalItemsSourcePropertyChangedListener = new WeakEventListener<DataGridDataConnection, object, PropertyChangedEventArgs>(this);
                     _weakIncrementalItemsSourcePropertyChangedListener.OnEventAction = (instance, source, eventArgs) => instance.NotifyingIncrementalItemsSource(source, eventArgs);
-                    _weakIncrementalItemsSourcePropertyChangedListener.OnDetachAction = (weakEventListener) => inpc.PropertyChanged -= weakEventListener.OnEvent;
+                    _weakIncrementalItemsSourcePropertyChangedListener.OnDetachAction = (instance, weakEventListener) => inpc.PropertyChanged -= weakEventListener.OnEvent;
                     inpc.PropertyChanged += _weakIncrementalItemsSourcePropertyChangedListener.OnEvent;
             }
 

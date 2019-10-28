@@ -1687,7 +1687,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
                 {
                     WeakEventListener<DataGrid, object, PropertyChangedEventArgs> weakPropertyChangedListener = new WeakEventListener<DataGrid, object, PropertyChangedEventArgs>(this);
                     weakPropertyChangedListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionViewGroup_PropertyChanged(source, eventArgs);
-                    weakPropertyChangedListener.OnDetachAction = (weakEventListener) => inpc.PropertyChanged -= weakEventListener.OnEvent;
+                    weakPropertyChangedListener.OnDetachAction = (instance, weakEventListener) => inpc.PropertyChanged -= weakEventListener.OnEvent;
                     inpc.PropertyChanged += weakPropertyChangedListener.OnEvent;
 
                     _groupsPropertyChangedListenersTable.Add(inpc, weakPropertyChangedListener);
@@ -2517,7 +2517,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             {
                 WeakEventListener<DataGrid, object, NotifyCollectionChangedEventArgs> weakCollectionChangedListener = new WeakEventListener<DataGrid, object, NotifyCollectionChangedEventArgs>(this);
                 weakCollectionChangedListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionViewGroup_CollectionChanged(source, eventArgs);
-                weakCollectionChangedListener.OnDetachAction = (weakEventListener) => incc.CollectionChanged -= weakCollectionChangedListener.OnEvent;
+                weakCollectionChangedListener.OnDetachAction = (instance, weakEventListener) => incc.CollectionChanged -= weakCollectionChangedListener.OnEvent;
                 incc.CollectionChanged += weakCollectionChangedListener.OnEvent;
 
                 _groupsCollectionChangedListenersTable.Add(incc, weakCollectionChangedListener);
@@ -2543,7 +2543,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             {
                 WeakEventListener<DataGrid, object, IVectorChangedEventArgs> weakVectorChangedListener = new WeakEventListener<DataGrid, object, IVectorChangedEventArgs>(this);
                 weakVectorChangedListener.OnEventAction = (instance, source, eventArgs) => instance.CollectionViewGroupItems_VectorChanged(source as IObservableVector<object>, eventArgs);
-                weakVectorChangedListener.OnDetachAction = (weakEventListener) => groupItems.VectorChanged -= weakVectorChangedListener.OnEvent;
+                weakVectorChangedListener.OnDetachAction = (instance, weakEventListener) => groupItems.VectorChanged -= weakVectorChangedListener.OnEvent;
                 groupItems.VectorChanged += weakVectorChangedListener.OnEvent;
 
                 _groupsVectorChangedListenersTable.Add(groupItems, weakVectorChangedListener);

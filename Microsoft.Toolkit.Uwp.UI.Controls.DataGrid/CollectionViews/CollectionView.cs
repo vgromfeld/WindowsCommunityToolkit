@@ -91,7 +91,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Data.Utilities
                         OnEventAction = (source, changed, arg) => OnCollectionChanged(source, arg),
 
                         // The source doesn't exist anymore
-                        OnDetachAction = (listener) => incc.CollectionChanged -= _sourceWeakEventListener.OnEvent
+                        OnDetachAction = (source, listener) => incc.CollectionChanged -= _sourceWeakEventListener.OnEvent
                     };
                 incc.CollectionChanged += _sourceWeakEventListener.OnEvent;
             }

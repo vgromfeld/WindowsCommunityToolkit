@@ -46,7 +46,7 @@ namespace Microsoft.Toolkit.Uwp.Utilities
         /// <summary>
         /// Gets or sets the method to call when detaching from the event.
         /// </summary>
-        public Action<WeakEventListener<TInstance, TSource, TEventArgs>> OnDetachAction { get; set; }
+        public Action<TInstance, WeakEventListener<TInstance, TSource, TEventArgs>> OnDetachAction { get; set; }
 
         /// <summary>
         /// Handler for the subscribed event calls OnEventAction to handle it.
@@ -73,7 +73,8 @@ namespace Microsoft.Toolkit.Uwp.Utilities
         /// </summary>
         public void Detach()
         {
-            OnDetachAction?.Invoke(this);
+            TInstance target = (TInstance)weakInstance.Target;
+            OnDetachAction?.Invoke(target, this);
             OnDetachAction = null;
         }
     }
