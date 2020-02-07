@@ -70,6 +70,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
 
                 // And set focus to it
                 await FocusManager.TryFocusAsync(itemToFocus, FocusState.Keyboard);
+
+                // Clear the selection content
+                _autoSuggestTextBox.SelectedText = string.Empty;
                 e.Handled = true;
             }
         }
@@ -198,9 +201,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
 
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            TextChanged?.Invoke(sender, args);
-
             string t = sender.Text.Trim();
+            Text = t;
+            TextChanged?.Invoke(sender, args);
 
             if (!string.IsNullOrEmpty(TokenDelimiter) && t.Contains(TokenDelimiter))
             {
@@ -343,7 +346,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             {
                 case VirtualKey.Left:
                     {
-                        FocusManager.TryMoveFocus(FocusNavigationDirection.Left);
+                    FocusManager.TryMoveFocus(FocusNavigationDirection.Left);
                         break;
                     }
 
@@ -404,7 +407,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
                         addSeparator = true;
                     }
 
-                    tokenString += item.Content;
+                    tokenString += item.Content.ToString();
                 }
 
                 dataPackage.SetText(tokenString);
@@ -414,6 +417,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
 
         private void RemoveToken(TokenizingTextBoxItem item)
         {
+            // TODO: the event should be fired AFTER the item is removed. 
+            // Maybe needs to have RemovingToken and RemovedToken as two events?
+
             var tirea = new TokenItemRemovedEventArgs(item?.Content, item);
             TokenItemRemoved?.Invoke(this, tirea);
 
@@ -462,6 +468,51 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             }
 
             return string.Join(tokenDelimiter, tokenStrings);
+        }
+
+        /// <summary>
+        /// Adds the specified object to the wrap panel 
+        /// </summary>
+        /// <returns>true</returns>
+        public async Task<bool> AddItem(object token)
+        {
+            await AddToken(token);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes all instances of the specified object from the wrap panel
+        /// </summary>
+        /// <returns>true</returns>
+        public bool RemoveItem(object token)
+        {
+            foreach (var item in TokenizedItemsInternal)
+            {
+                if (item.Content == token)
+                {
+                    TokenizedItemsInternal.Remove(item);
+                    SelectedItemsInternal.Remove(item);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes all items from the wrap panel
+        /// </summary>
+        /// <returns>true</returns>
+        public bool ClearItems()
+        {
+            TokenizedItemsInternal.Clear();
+            SelectedItemsInternal.Clear();
+
+            while (_wrapPanel.Children.Count > 1)
+            {
+                _wrapPanel.Children.RemoveAt(0);
+            }
+
+            return true;
         }
     }
 }

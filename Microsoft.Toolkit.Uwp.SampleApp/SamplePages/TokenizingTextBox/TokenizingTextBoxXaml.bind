@@ -8,6 +8,11 @@
       mc:Ignorable="d">
 
     <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+
       <controls:TokenizingTextBox
           x:Name="TokenBox"
           PlaceholderText="Add Actions"
@@ -40,5 +45,41 @@
           </DataTemplate>
         </controls:TokenizingTextBox.TokenItemTemplate>
       </controls:TokenizingTextBox>
+
+        <StackPannel Grid.Row="1">
+          <controls:TokenizingTextBox
+            x:Name="TokenBoxWhatsApp"
+            PlaceholderText="Select Names"
+            QueryIcon="Find"
+            MaxHeight="104"
+            MaxWidth="400"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.HorizontalScrollMode="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollMode="Enabled"
+            TextMemberPath="Text"
+            VerticalAlignment="Center"
+            TokenSpacing="2"
+            Padding="4"
+            TokenDelimiter=",">
+            <controls:TokenizingTextBox.SuggestedItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <SymbolIcon Symbol="{Binding Icon}"/>
+                  <TextBlock Text="{Binding Text}" Padding="4,0,0,0"/>
+                </StackPanel>
+              </DataTemplate>
+            </controls:TokenizingTextBox.SuggestedItemTemplate>
+            <controls:TokenizingTextBox.TokenItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <SymbolIcon Symbol="{Binding Icon}"/>
+                  <TextBlock Text="{Binding Text}" Padding="4,0,0,0"/>
+                </StackPanel>
+              </DataTemplate>
+            </controls:TokenizingTextBox.TokenItemTemplate>
+          </controls:TokenizingTextBox>
+          <ListView/>
+      </StackPannel>
     </Grid>
 </Page>
