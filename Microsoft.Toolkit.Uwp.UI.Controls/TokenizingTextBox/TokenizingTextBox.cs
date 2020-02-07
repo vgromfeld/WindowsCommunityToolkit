@@ -346,7 +346,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             {
                 case VirtualKey.Left:
                     {
-                    FocusManager.TryMoveFocus(FocusNavigationDirection.Left);
+                        FocusManager.TryMoveFocus(FocusNavigationDirection.Left);
                         break;
                     }
 
